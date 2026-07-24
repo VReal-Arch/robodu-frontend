@@ -1,5 +1,6 @@
 "use client";
 
+import { ReactElement } from "react";
 import { useStore } from "@/store/store";
 
 const MODE_ICON: Record<string, string> = { mouse: "🖱️", keypad: "⌨️", analog: "🎮" };
@@ -20,7 +21,7 @@ export default function SafetyPanel() {
   const estop = useStore((s) => s.estop);
   const resetEstop = useStore((s) => s.resetEstop);
 
-  const rows: { ic: string; l: string; chip: JSX.Element }[] = [
+  const rows: { ic: string; l: string; chip: ReactElement }[] = [
     { ic: "🖥️", l: "Server Link", chip: wsConnected ? <Chip label="OK" kind="teal" /> : <Chip label="DOWN" kind="red" /> },
     { ic: "🔗", l: "Robot Link", chip: connected ? <Chip label="OK" kind="teal" /> : <Chip label="LOST" kind="red" /> },
     { ic: "💓", l: "Heartbeat", chip: connected ? <Chip label="Live" kind="teal" /> : <Chip label="No signal" kind="red" /> },
