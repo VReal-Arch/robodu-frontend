@@ -13,26 +13,10 @@ class WsClient {
   private msgHandler: MsgHandler | null = null;
   private statusHandler: StatusHandler | null = null;
   private retry: ReturnType<typeof setTimeout> | null = null;
-  private manuallyClosed = false;
 
   connect(url: string) {
     this.url = url;
-    this.manuallyClosed = false;
-    // guard: don't open a second socket if one is already open/connecting
-    if (this.ws && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)) {
-      return;
-    }
     this.open();
-  }
-
-  disconnect() {
-    this.manuallyClosed = true;
-    if (this.retry) {
-      clearTimeout(this.retry);
-      this.retry = null;
-    }
-    this.ws?.close();
-    this.ws = null;
   }
 
   private open() {
@@ -53,7 +37,7 @@ class WsClient {
     };
     this.ws.onclose = () => {
       this.statusHandler?.(false);
-      if (!this.manuallyClosed) this.scheduleRetry();
+      this.scheduleRetry();
     };
     this.ws.onerror = () => this.ws?.close();
   }

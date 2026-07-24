@@ -8,6 +8,7 @@ import { fmt } from "@/lib/format";
 import RobotDropdown from "@/components/RobotDropdown";
 import ActivityLog from "@/components/ActivityLog";
 import LiveValue from "@/components/LiveValue";
+import PartnerLogos from "@/components/PartnerLogos";
 
 export default function DashboardPage() {
   const activeId = useStore((s) => s.activeId);
@@ -86,6 +87,8 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
+      <PartnerLogos />
     </div>
   );
 }
