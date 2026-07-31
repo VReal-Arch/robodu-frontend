@@ -1,4 +1,5 @@
-export type RobotId = "ball_beam" | "bi_rotor" | "lin_pend" | "rot_pend" | "humanoid";
+export type RobotId = string;
+export type RobotFamily = "ball_beam" | "bi_rotor" | "lin_pend" | "rot_pend" | "humanoid";
 export type Gait = "idle" | "stand" | "balance" | "walk";
 export type InputMode = "mouse" | "keypad" | "analog";
 export type ChartMode = "combined" | "separated";
@@ -20,6 +21,8 @@ export interface Plant {
 
 export interface PidRobotConfig {
   id: RobotId;
+  family: RobotFamily;
+  unit: number;
   name: string;
   icon: string;
   type: "pid";
@@ -41,6 +44,8 @@ export interface PidRobotConfig {
 
 export interface HumanoidRobotConfig {
   id: RobotId;
+  family: RobotFamily;
+  unit: number;
   name: string;
   icon: string;
   type: "humanoid";

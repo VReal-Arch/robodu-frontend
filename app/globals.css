@@ -235,3 +235,8 @@ a{color:inherit;text-decoration:none}
   -webkit-mask-size:contain;mask-size:contain}
 .plogo:hover{opacity:1;background-color:var(--teal-dark)}
 @media(max-width:600px){.partners-row{gap:26px}}
+
+/* GROUPED DROPDOWN (multi-unit) */
+.dropdown-menu{max-height:340px;overflow-y:auto}
+.dd-group-label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--t2);padding:10px 12px 5px;display:flex;align-items:center;gap:7px;position:sticky;top:0;background:var(--surface)}
+.dd-unit{padding-left:26px}

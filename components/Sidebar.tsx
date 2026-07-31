@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useStore } from "@/store/store";
-import { getRobot } from "@/lib/robots";
+import { getRobot, displayName } from "@/lib/robots";
 
 const NAV = [
   { href: "/", icon: "🏠", label: "Dashboard" },
@@ -62,7 +62,7 @@ export default function Sidebar() {
           <div className="conn-badge">
             <div className={"pulse-dot" + (connected ? "" : " red")} />
             <div>
-              <div className="conn-label">{robot.name}</div>
+              <div className="conn-label">{displayName(robot)}</div>
               <div className="conn-sub">{connected ? "Connected" : "Disconnected"}</div>
             </div>
           </div>

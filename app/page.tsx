@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useStore } from "@/store/store";
-import { getRobot } from "@/lib/robots";
+import { getRobot, displayName } from "@/lib/robots";
 import { engine } from "@/lib/engine";
 import { fmt } from "@/lib/format";
 import RobotDropdown from "@/components/RobotDropdown";
@@ -29,7 +29,7 @@ export default function DashboardPage() {
           <div className="stat-icon">{robot.icon}</div>
           <div className="stat-label">Active Robot</div>
           <div className="stat-value" style={{ fontSize: 16, paddingTop: 4 }}>
-            {robot.name}
+            {displayName(robot)}
           </div>
           <div className="stat-sub">{isPid ? "PID balance control" : "Humanoid balance"}</div>
         </div>

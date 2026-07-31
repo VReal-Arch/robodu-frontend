@@ -40,26 +40,20 @@ export default function StartupConnect() {
           Nyalakan robot &amp; pastikan terhubung WiFi, lalu hubungkan tiap robot
           lewat halaman koneksi (Settings).
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 18 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 18, maxHeight: 220, overflowY: "auto" }}>
           {ROBOTS.map((r) => (
             <div
               key={r.id}
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                padding: "8px 12px",
-                background: "var(--bg)",
-                border: "1px solid var(--border)",
-                borderRadius: 8,
-                fontSize: 13,
+                display: "flex", alignItems: "center", gap: 10, padding: "7px 12px",
+                background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12.5,
               }}
             >
-              <span style={{ fontSize: 16 }}>{r.icon}</span>
-              <span style={{ flex: 1, fontWeight: 500 }}>{r.name}</span>
+              <span style={{ fontSize: 15 }}>{r.icon}</span>
+              <span style={{ flex: 1, fontWeight: 500 }}>{r.name} · U{r.unit}</span>
               <span
                 className={"chip " + (controls[r.id].connected ? "chip-teal" : "chip-red")}
-                style={{ padding: "2px 10px", fontSize: 10 }}
+                style={{ padding: "2px 9px", fontSize: 10 }}
               >
                 {controls[r.id].connected ? "Online" : "Menunggu…"}
               </span>

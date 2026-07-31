@@ -1,7 +1,7 @@
 "use client";
 
 import { useStore, canControl } from "@/store/store";
-import { getRobot } from "@/lib/robots";
+import { getRobot, displayName } from "@/lib/robots";
 import { notifyIfBlocked, lockReason } from "@/lib/control";
 import ChartsPanel from "@/components/ChartsPanel";
 import SafetyPanel from "@/components/SafetyPanel";
@@ -46,7 +46,7 @@ export default function ControlPage() {
         <div className="card" style={{ padding: "14px 18px", display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
           <div className={"pulse-dot" + (ctrl.connected ? "" : " red")} />
           <div style={{ flex: 1, minWidth: 150 }}>
-            <div style={{ fontSize: 13, fontWeight: 600 }}>{robot.name}</div>
+            <div style={{ fontSize: 13, fontWeight: 600 }}>{displayName(robot)}</div>
             <div style={{ fontSize: 11, color: "var(--t2)" }}>
               {ctrl.connected ? "WebSocket • Connected" : "Disconnected — Settings"}
             </div>
@@ -68,7 +68,7 @@ export default function ControlPage() {
       <div className="card">
         <div className="card-title">
           <span>
-            {robot.icon} {robot.name}
+            {robot.icon} {displayName(robot)}
           </span>
         </div>
 

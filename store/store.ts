@@ -97,7 +97,7 @@ export const useStore = create<State>((set, get) => ({
   theme: "light",
   sidebarOpen: false,
   dropdownOpen: false,
-  activeId: "ball_beam",
+  activeId: "ball_beam_1",
   inputMode: "mouse",
   chartMode: "combined",
   estop: false,

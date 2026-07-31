@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useStore } from "@/store/store";
-import { ROBOTS, getRobot } from "@/lib/robots";
+import { getRobot, robotsByFamily, displayName } from "@/lib/robots";
 
 export default function RobotDropdown() {
   const open = useStore((s) => s.dropdownOpen);
@@ -12,6 +12,7 @@ export default function RobotDropdown() {
   const controls = useStore((s) => s.controls);
   const ref = useRef<HTMLDivElement>(null);
   const active = getRobot(activeId);
+  const groups = robotsByFamily();
 
   useEffect(() => {
     function onClick(e: MouseEvent) {
@@ -25,12 +26,8 @@ export default function RobotDropdown() {
     <div style={{ marginBottom: 18 }}>
       <div
         style={{
-          fontSize: 11,
-          fontWeight: 700,
-          color: "var(--t2)",
-          textTransform: "uppercase",
-          letterSpacing: ".8px",
-          marginBottom: 8,
+          fontSize: 11, fontWeight: 700, color: "var(--t2)",
+          textTransform: "uppercase", letterSpacing: ".8px", marginBottom: 8,
         }}
       >
         Pilih Robot
@@ -44,23 +41,27 @@ export default function RobotDropdown() {
           }}
         >
           <span className="rtab-icon">{active.icon}</span>
-          <span>{active.name}</span>
-          <span className={"rtab-dot" + (controls[activeId].connected ? "" : " off")} />
-          <span className="dd-caret" style={{ transform: open ? "rotate(180deg)" : "rotate(0)" }}>
-            ▾
-          </span>
+          <span>{displayName(active)}</span>
+          <span className={"rtab-dot" + (controls[activeId]?.connected ? "" : " off")} />
+          <span className="dd-caret" style={{ transform: open ? "rotate(180deg)" : "rotate(0)" }}>▾</span>
         </button>
         {open && (
           <div className="dropdown-menu fade-up">
-            {ROBOTS.map((r) => (
-              <div
-                key={r.id}
-                className={"dd-item" + (r.id === activeId ? " active" : "")}
-                onClick={() => selectRobot(r.id)}
-              >
-                <span className="rtab-icon">{r.icon}</span>
-                <span style={{ flex: 1 }}>{r.name}</span>
-                <span className={"rtab-dot" + (controls[r.id].connected ? "" : " off")} />
+            {groups.map((g) => (
+              <div key={g.family}>
+                <div className="dd-group-label">
+                  <span>{g.icon}</span> {g.name}
+                </div>
+                {g.units.map((r) => (
+                  <div
+                    key={r.id}
+                    className={"dd-item dd-unit" + (r.id === activeId ? " active" : "")}
+                    onClick={() => selectRobot(r.id)}
+                  >
+                    <span style={{ flex: 1 }}>Unit {r.unit}</span>
+                    <span className={"rtab-dot" + (controls[r.id]?.connected ? "" : " off")} />
+                  </div>
+                ))}
               </div>
             ))}
           </div>

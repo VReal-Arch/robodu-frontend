@@ -1,7 +1,7 @@
 "use client";
 
 import { useStore } from "@/store/store";
-import { ROBOTS, getRobot } from "@/lib/robots";
+import { ROBOTS, robotsByFamily, getRobot } from "@/lib/robots";
 import { RobotId } from "@/lib/types";
 
 export default function SettingsPage() {
@@ -12,6 +12,7 @@ export default function SettingsPage() {
   const disconnectAll = useStore((s) => s.disconnectAll);
   const pushModal = useStore((s) => s.pushModal);
   const connectedCount = ROBOTS.filter((r) => controls[r.id].connected).length;
+  const groups = robotsByFamily();
 
   function toggle(id: RobotId) {
     const willConnect = !controls[id].connected;
@@ -21,7 +22,7 @@ export default function SettingsPage() {
       icon: willConnect ? "✅" : "🔌",
       title: willConnect ? "Robot Dihubungkan" : "Robot Diputus",
       body:
-        r.name +
+        `${r.name} · Unit ${r.unit}` +
         (willConnect
           ? " dihubungkan. Data akan tampil begitu robot mengirim telemetry."
           : " diputus." + (r.type === "pid" ? " Balancing dihentikan (fail-safe)." : "")),
@@ -35,26 +36,14 @@ export default function SettingsPage() {
         style={{
           background: wsConnected ? "var(--teal-light)" : "#FFEBEE",
           border: "1px solid " + (wsConnected ? "var(--teal-mid)" : "#FFCDD2"),
-          borderRadius: 14,
-          padding: 22,
-          display: "flex",
-          alignItems: "center",
-          gap: 20,
-          marginBottom: 22,
+          borderRadius: 14, padding: 22, display: "flex", alignItems: "center", gap: 20, marginBottom: 22,
         }}
       >
         <div
           style={{
-            width: 60,
-            height: 60,
-            background: wsConnected ? "var(--teal)" : "var(--danger)",
-            borderRadius: "50%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 26,
-            color: "#fff",
-            flexShrink: 0,
+            width: 60, height: 60, background: wsConnected ? "var(--teal)" : "var(--danger)",
+            borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 26, color: "#fff", flexShrink: 0,
           }}
         >
           {wsConnected ? "🔗" : "⚠️"}
@@ -84,28 +73,40 @@ export default function SettingsPage() {
           </span>
         </div>
         <div style={{ fontSize: 12, color: "var(--t3)", marginBottom: 14 }}>
-          Sambungkan tiap robot secara manual. Pastikan robot sudah menyala &amp; terhubung ke WiFi
-          agar datanya masuk setelah dihubungkan.
+          Sambungkan tiap robot secara manual. Pastikan robot sudah menyala &amp; terhubung ke WiFi.
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          {ROBOTS.map((r) => {
-            const c = controls[r.id];
-            return (
-              <div key={r.id} className={"robot-item" + (c.connected ? " connected" : "")}>
-                <div className="robot-avatar">{r.icon}</div>
-                <div style={{ flex: 1 }}>
-                  <div className="r-name">{r.name}</div>
-                  <div className="r-sub">
-                    {(r.type === "pid" ? r.yVar : "Balance / Gait") + " • " + (c.connected ? "terhubung" : "belum terhubung")}
+
+        {groups.map((g) => (
+          <div key={g.family} style={{ marginBottom: 16 }}>
+            <div
+              style={{
+                fontSize: 11, fontWeight: 700, letterSpacing: ".6px", textTransform: "uppercase",
+                color: "var(--t2)", margin: "4px 0 8px", display: "flex", alignItems: "center", gap: 8,
+              }}
+            >
+              <span style={{ fontSize: 15 }}>{g.icon}</span> {g.name}
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {g.units.map((r) => {
+                const c = controls[r.id];
+                return (
+                  <div key={r.id} className={"robot-item" + (c.connected ? " connected" : "")}>
+                    <div className="robot-avatar" style={{ fontSize: 15, width: 34, height: 34 }}>
+                      U{r.unit}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div className="r-name">Unit {r.unit}</div>
+                      <div className="r-sub">{c.connected ? "terhubung" : "belum terhubung"}</div>
+                    </div>
+                    <button className={"badge " + (c.connected ? "badge-on" : "badge-off")} onClick={() => toggle(r.id)}>
+                      {c.connected ? "Disconnect" : "Connect"}
+                    </button>
                   </div>
-                </div>
-                <button className={"badge " + (c.connected ? "badge-on" : "badge-off")} onClick={() => toggle(r.id)}>
-                  {c.connected ? "Disconnect" : "Connect"}
-                </button>
-              </div>
-            );
-          })}
-        </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
