@@ -7,10 +7,10 @@
  * the square ERC mark would otherwise dominate the wide wordmarks.
  */
 const LOGOS = [
-  { file: "logo-elins.png", alt: "ELINS UGM", height: 42, ratio: 671 / 168 },
-  { file: "logo-esr.png", alt: "Embedded Systems and Robotics Laboratory", height: 53, ratio: 330 / 198 },
-  { file: "logo-mei.png", alt: "Magister Elektronika dan Instrumentasi UGM", height: 48, ratio: 479 / 180 },
-  { file: "logo-erc.png", alt: "Elins Research Club", height: 50, ratio: 1 },
+  { file: "logo-elins.webp", alt: "ELINS UGM", height: 42, ratio: 671 / 168 },
+  { file: "logo-esr.webp", alt: "Embedded Systems and Robotics Laboratory", height: 53, ratio: 330 / 198 },
+  { file: "logo-mei.webp", alt: "Magister Elektronika dan Instrumentasi UGM", height: 48, ratio: 479 / 180 },
+  { file: "logo-erc.webp", alt: "Elins Research Club", height: 50, ratio: 1 },
 ];
 
 export default function PartnerLogos() {
