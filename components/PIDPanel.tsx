@@ -2,6 +2,7 @@
 
 import { useStore, canControl } from "@/store/store";
 import { getRobot } from "@/lib/robots";
+import { fmt } from "@/lib/format";
 import { notifyIfBlocked } from "@/lib/control";
 import { PID } from "@/lib/types";
 
@@ -36,7 +37,7 @@ export default function PIDPanel() {
             <span className="pid-name">
               {r.label} <small>{r.sub}</small>
             </span>
-            <span className="pid-val">{pid[r.key].toFixed(r.dec)}</span>
+            <span className="pid-val">{fmt(pid[r.key], r.dec)}</span>
           </div>
           <input
             type="range"

@@ -12,7 +12,11 @@ export function cssVar(name: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || "#4DB6AC";
 }
 
-export function fmt(v: number, d = 1): string {
+/** Memformat angka untuk ditampilkan. Sengaja menerima nilai kosong: telemetry
+ *  yang belum tiba atau paket yang rusak tidak boleh sampai membuat seluruh
+ *  dashboard berhenti, cukup tampilkan nol. */
+export function fmt(v: number | undefined | null, d = 1): string {
+  if (typeof v !== "number" || !isFinite(v)) return (0).toFixed(d);
   return v.toFixed(d);
 }
 

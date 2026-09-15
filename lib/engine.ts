@@ -7,9 +7,17 @@ export interface PidBuffers { sp: number[]; y: number[]; e: number[]; u: number[
 export interface HumBuffers { roll: number[]; pitch: number[]; comX: number[]; comY: number[]; }
 
 interface Last {
-  actual?: number; output?: number; error?: number; setpoint?: number;
-  roll?: number; pitch?: number; comX?: number; comY?: number;
+  actual: number; output: number; error: number; setpoint: number;
+  roll: number; pitch: number; comX: number; comY: number;
 }
+
+/** Nilai awal sebelum paket telemetry pertama tiba. Harus berupa angka, bukan
+ *  objek kosong: komponen memformatnya begitu halaman dibuka, dan undefined
+ *  membuat pemanggilan toFixed gagal. */
+const NOL: Last = {
+  actual: 0, output: 0, error: 0, setpoint: 0,
+  roll: 0, pitch: 0, comX: 0, comY: 0,
+};
 interface PidRt { type: "pid"; buf: PidBuffers; last: Last; }
 interface HumRt { type: "humanoid"; buf: HumBuffers; last: Last; }
 type Rt = PidRt | HumRt;
@@ -28,9 +36,9 @@ export class TelemetryStore {
     this.rt = {} as Record<RobotId, Rt>;
     for (const r of ROBOTS) {
       if (r.type === "pid") {
-        this.rt[r.id] = { type: "pid", buf: { sp: [], y: [], e: [], u: [] }, last: {} };
+        this.rt[r.id] = { type: "pid", buf: { sp: [], y: [], e: [], u: [] }, last: { ...NOL } };
       } else {
-        this.rt[r.id] = { type: "humanoid", buf: { roll: [], pitch: [], comX: [], comY: [] }, last: {} };
+        this.rt[r.id] = { type: "humanoid", buf: { roll: [], pitch: [], comX: [], comY: [] }, last: { ...NOL } };
       }
     }
   }
@@ -56,7 +64,7 @@ export class TelemetryStore {
       push(r.buf.y, m.actual);
       push(r.buf.e, m.error);
       push(r.buf.u, m.output);
-      r.last = { actual: m.actual, output: m.output, error: m.error, setpoint: m.setpoint };
+      r.last = { ...NOL, actual: m.actual, output: m.output, error: m.error, setpoint: m.setpoint };
     } else {
       const roll = m.imu?.roll ?? 0;
       const pitch = m.imu?.pitch ?? 0;
@@ -64,7 +72,7 @@ export class TelemetryStore {
       push(r.buf.pitch, pitch);
       push(r.buf.comX, 0);
       push(r.buf.comY, 0);
-      r.last = { roll, pitch, comX: 0, comY: 0 };
+      r.last = { ...NOL, roll, pitch };
     }
   }
 }
