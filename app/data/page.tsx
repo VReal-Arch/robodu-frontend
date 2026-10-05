@@ -7,6 +7,7 @@ import { fmt } from "@/lib/format";
 import ChartsPanel from "@/components/ChartsPanel";
 import ActivityLog from "@/components/ActivityLog";
 import LiveValue from "@/components/LiveValue";
+import Icon from "@/components/Icon";
 
 export default function DataPage() {
   const activeId = useStore((s) => s.activeId);
@@ -18,7 +19,7 @@ export default function DataPage() {
     <div className="fade-up">
       <div className="stat-row">
         <div className="stat-card">
-          <div className="stat-icon">🎯</div>
+          <div className="stat-icon"><Icon name="target" size={20} /></div>
           <div className="stat-label">{isPid ? robot.yVar : "Roll"}</div>
           <div className="stat-value">
             <LiveValue
@@ -31,7 +32,7 @@ export default function DataPage() {
           <div className="stat-sub">{isPid ? "setpoint " + fmt(ctrl.setpoint) : "tilt"}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon">📉</div>
+          <div className="stat-icon"><Icon name="trend" size={20} /></div>
           <div className="stat-label">Error</div>
           <div className="stat-value">
             <LiveValue
@@ -44,7 +45,7 @@ export default function DataPage() {
           <div className="stat-sub">{isPid ? "steady-state" : "CoM X"}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon">🎚️</div>
+          <div className="stat-icon"><Icon name="sliders" size={20} /></div>
           <div className="stat-label">{isPid ? robot.uVar : "Pitch"}</div>
           <div className="stat-value">
             <LiveValue
@@ -57,9 +58,9 @@ export default function DataPage() {
           <div className="stat-sub">{isPid ? robot.uUnit : "°"}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon">⚙️</div>
+          <div className="stat-icon"><Icon name="pulse" size={20} /></div>
           <div className="stat-label">PID</div>
-          <div className="stat-value" style={{ fontSize: 14, paddingTop: 6 }}>
+          <div className="stat-value stat-value-text stat-value-mono">
             {isPid ? `${fmt(ctrl.pid.kp)} / ${fmt(ctrl.pid.ki, 2)} / ${fmt(ctrl.pid.kd)}` : "—"}
           </div>
           <div className="stat-sub">Kp / Ki / Kd</div>
@@ -68,7 +69,7 @@ export default function DataPage() {
 
       <ChartsPanel height={150} />
 
-      <div className="card" style={{ marginTop: 18 }}>
+      <div className="card mt-18">
         <div className="card-title">Log Aktivitas</div>
         <ActivityLog max={8} />
       </div>

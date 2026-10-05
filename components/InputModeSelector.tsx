@@ -1,6 +1,7 @@
 "use client";
 
 import { useStore } from "@/store/store";
+import Icon from "@/components/Icon";
 
 const HINTS: Record<string, string> = {
   mouse: "Geser slider / tombol −+ untuk setpoint",
@@ -49,30 +50,21 @@ export default function InputModeSelector({ label }: { label: string }) {
 
   return (
     <div style={{ marginBottom: 14 }}>
-      <div
-        style={{
-          fontSize: 10,
-          fontWeight: 700,
-          color: "var(--t2)",
-          textTransform: "uppercase",
-          letterSpacing: ".8px",
-          marginBottom: 8,
-        }}
-      >
+      <div className="field-label">
         {label}
       </div>
       <div className="mode-selector">
         <button className={"mode-btn" + (inputMode === "mouse" ? " active" : "")} onClick={() => select("mouse")}>
-          🖱️ Mouse
+          <Icon name="mouse" size={15} /> Mouse
         </button>
         <button className={"mode-btn" + (inputMode === "keypad" ? " active" : "")} onClick={() => select("keypad")}>
-          ⌨️ Keypad
+          <Icon name="keyboard" size={15} /> Keypad
         </button>
         <button className={"mode-btn" + (inputMode === "analog" ? " active" : "")} onClick={() => select("analog")}>
-          🎮 Analog
+          <Icon name="gamepad" size={15} /> Analog
         </button>
       </div>
-      <div style={{ fontSize: 11, color: "var(--t3)", marginTop: 8, textAlign: "center" }}>
+      <div className="hint-text">
         {HINTS[inputMode]}
       </div>
     </div>

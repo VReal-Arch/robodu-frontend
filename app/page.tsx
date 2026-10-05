@@ -9,6 +9,7 @@ import RobotDropdown from "@/components/RobotDropdown";
 import ActivityLog from "@/components/ActivityLog";
 import LiveValue from "@/components/LiveValue";
 import PartnerLogos from "@/components/PartnerLogos";
+import Icon from "@/components/Icon";
 
 export default function DashboardPage() {
   const activeId = useStore((s) => s.activeId);
@@ -26,23 +27,23 @@ export default function DashboardPage() {
 
       <div className="stat-row">
         <div className="stat-card">
-          <div className="stat-icon">{robot.icon}</div>
+          <div className="stat-icon stat-icon-emoji">{robot.icon}</div>
           <div className="stat-label">Active Robot</div>
-          <div className="stat-value" style={{ fontSize: 16, paddingTop: 4 }}>
+          <div className="stat-value stat-value-text">
             {displayName(robot)}
           </div>
           <div className="stat-sub">{isPid ? "PID balance control" : "Humanoid balance"}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon">⚡</div>
+          <div className="stat-icon"><Icon name="bolt" size={20} /></div>
           <div className="stat-label">Status</div>
-          <div className="stat-value" style={{ fontSize: 16, paddingTop: 4 }}>
+          <div className="stat-value stat-value-text">
             {status}
           </div>
           <div className="stat-sub">{ctrl.connected ? "Loop active" : "Disconnected"}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon">🎯</div>
+          <div className="stat-icon"><Icon name="target" size={20} /></div>
           <div className="stat-label">{varLabel}</div>
           <div className="stat-value">
             <LiveValue
@@ -55,9 +56,9 @@ export default function DashboardPage() {
           <div className="stat-sub">{isPid ? "setpoint " + fmt(ctrl.setpoint) : "live tilt"}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon">📶</div>
+          <div className="stat-icon"><Icon name="signal" size={20} /></div>
           <div className="stat-label">Connection</div>
-          <div className="stat-value" style={{ fontSize: 16, paddingTop: 4 }}>
+          <div className="stat-value stat-value-text">
             {ctrl.connected ? "Online" : "—"}
           </div>
           <div className="stat-sub">{ctrl.connected ? "WebSocket OK" : "No link"}</div>
@@ -71,18 +72,18 @@ export default function DashboardPage() {
         </div>
         <div className="card">
           <div className="card-title">Quick Actions</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 4 }}>
-            <Link className="btn btn-primary btn-full" href="/control" style={{ textAlign: "center" }}>
-              🎛️ Tune Active Robot
+          <div className="stack-10">
+            <Link className="btn btn-primary btn-full btn-cta" href="/control">
+              <Icon name="sliders" size={16} /> Tune Active Robot
             </Link>
-            <Link className="btn btn-outline btn-full" href="/data" style={{ textAlign: "center" }}>
-              📈 View Live Charts
+            <Link className="btn btn-outline btn-full btn-cta" href="/data">
+              <Icon name="chart" size={16} /> View Live Charts
             </Link>
-            <Link className="btn btn-outline btn-full" href="/settings" style={{ textAlign: "center" }}>
-              ⚙️ Manage Connections
+            <Link className="btn btn-outline btn-full btn-cta" href="/settings">
+              <Icon name="plug" size={16} /> Manage Connections
             </Link>
-            <button className="btn btn-danger btn-full" onClick={emergencyStop}>
-              🛑 Emergency Stop (All)
+            <button className="btn btn-danger btn-full btn-cta" onClick={emergencyStop}>
+              <Icon name="stop" size={16} /> Emergency Stop (All)
             </button>
           </div>
         </div>

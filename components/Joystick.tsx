@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { useStore, canControl } from "@/store/store";
 import { inputState } from "@/lib/format";
 import { notifyIfBlocked } from "@/lib/control";
+import Icon from "@/components/Icon";
 
 export default function Joystick() {
   const demoMode = useStore((s) => s.demoMode);
@@ -114,23 +115,23 @@ export default function Joystick() {
         <div className="joy-knob" ref={knobRef} />
       </div>
 
-      <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid var(--border)" }}>
-        <div style={{ fontSize: 10, fontWeight: 700, color: "var(--t2)", textTransform: "uppercase", letterSpacing: ".8px", marginBottom: 8 }}>
+      <div className="sect-top">
+        <div className="field-label">
           Analog Controller
         </div>
         <div className="safety-row" style={{ padding: "6px 0" }}>
-          <span style={{ fontSize: 16 }}>{status.ic}</span>
+          <span className="safety-ico"><Icon name="gamepad" size={16} /></span>
           <span className="s-label">{status.label}</span>
-          <span className={"chip chip-" + status.kind} style={{ padding: "2px 9px", fontSize: 10 }}>
+          <span className={"chip chip-sm chip-" + status.kind}>
             {status.chip}
           </span>
         </div>
         <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
-          <button className="btn btn-outline" style={{ fontSize: 12 }} onClick={scan}>
-            🔌 Scan
+          <button className="btn btn-outline btn-sm" onClick={scan}>
+            <Icon name="search" size={14} /> Scan
           </button>
-          <button className="btn btn-outline" style={{ fontSize: 12 }} onClick={toggleDemo}>
-            🎮 Demo
+          <button className="btn btn-outline btn-sm" onClick={toggleDemo}>
+            <Icon name="gamepad" size={14} /> Demo
           </button>
         </div>
       </div>

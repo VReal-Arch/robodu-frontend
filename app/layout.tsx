@@ -3,6 +3,7 @@ import "./globals.css";
 import Providers from "@/components/Providers";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
+import PageHero from "@/components/PageHero";
 
 export const metadata: Metadata = {
   title: "Robo-du Dashboard",
@@ -31,7 +32,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Sidebar />
             <div className="main">
               <Topbar />
-              <div className="content">{children}</div>
+              <div className="content">
+                <PageHero />
+                <div className="page-body">{children}</div>
+              </div>
             </div>
           </div>
         </Providers>

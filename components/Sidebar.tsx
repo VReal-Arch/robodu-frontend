@@ -4,13 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useStore } from "@/store/store";
 import { getRobot, displayName } from "@/lib/robots";
-
-const NAV = [
-  { href: "/", icon: "🏠", label: "Dashboard" },
-  { href: "/control", icon: "🎛️", label: "Control & Tuning" },
-  { href: "/data", icon: "📈", label: "Data & Charts" },
-  { href: "/settings", icon: "⚙️", label: "Settings" },
-];
+import { NAV } from "@/lib/nav";
+import Icon from "@/components/Icon";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -25,12 +20,14 @@ export default function Sidebar() {
       <div className={"sidebar-overlay" + (open ? " show" : "")} onClick={closeSidebar} />
       <aside className={"sidebar" + (open ? " open" : "")}>
         <div className="sidebar-logo">
-          <div className="logo-icon">🤖</div>
+          <div className="logo-icon">
+            <Icon name="bot" size={20} />
+          </div>
           <div className="logo-text">
-            Robo<span>-du</span>
+            ROBO<span>-DU</span>
           </div>
           <button className="sidebar-close" onClick={closeSidebar} aria-label="Tutup">
-            ✕
+            <Icon name="close" size={16} />
           </button>
         </div>
 
@@ -43,7 +40,9 @@ export default function Sidebar() {
               className={"nav-item" + (pathname === n.href ? " active" : "")}
               onClick={closeSidebar}
             >
-              <span className="nav-icon">{n.icon}</span>
+              <span className="nav-icon">
+                <Icon name={n.icon} size={18} />
+              </span>
               <span>{n.label}</span>
             </Link>
           ))}
@@ -53,7 +52,9 @@ export default function Sidebar() {
             className={"nav-item" + (pathname === "/settings" ? " active" : "")}
             onClick={closeSidebar}
           >
-            <span className="nav-icon">⚙️</span>
+            <span className="nav-icon">
+              <Icon name="plug" size={18} />
+            </span>
             <span>Settings</span>
           </Link>
         </nav>

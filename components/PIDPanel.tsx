@@ -5,6 +5,7 @@ import { getRobot } from "@/lib/robots";
 import { fmt } from "@/lib/format";
 import { notifyIfBlocked } from "@/lib/control";
 import { PID } from "@/lib/types";
+import Icon from "@/components/Icon";
 
 const ROWS: { key: keyof PID; label: string; sub: string; dec: number }[] = [
   { key: "kp", label: "Kp", sub: "Proportional", dec: 1 },
@@ -24,11 +25,11 @@ export default function PIDPanel() {
   return (
     <div>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-        <span style={{ fontSize: 10, fontWeight: 700, color: "var(--t2)", textTransform: "uppercase", letterSpacing: ".8px" }}>
+        <span className="field-label field-label-flush">
           PID Tuning
         </span>
-        <button className="btn btn-ghost" style={{ fontSize: 11, padding: "4px 8px" }} onClick={() => resetPid(activeId)}>
-          ↺ Reset
+        <button className="btn btn-ghost btn-sm" onClick={() => resetPid(activeId)}>
+          <Icon name="reset" size={13} /> Reset
         </button>
       </div>
       {ROWS.map((r) => (

@@ -17,26 +17,8 @@ export default function SetpointControl() {
   if (robot.type !== "pid") return null;
 
   return (
-    <div
-      style={{
-        background: "var(--bg)",
-        border: "1.5px solid var(--border)",
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 14,
-      }}
-    >
-      <div
-        style={{
-          fontSize: 10,
-          fontWeight: 700,
-          color: "var(--t2)",
-          textTransform: "uppercase",
-          letterSpacing: ".8px",
-          marginBottom: 10,
-          textAlign: "center",
-        }}
-      >
+    <div className="inset-panel">
+      <div className="field-label field-label-center">
         Setpoint — {robot.yVar}
       </div>
       <div className="big-val">

@@ -6,6 +6,7 @@ import { engine } from "@/lib/engine";
 import { fmt } from "@/lib/format";
 import StripChart, { Series } from "./StripChart";
 import LiveValue from "./LiveValue";
+import Icon from "./Icon";
 
 function Legend({ items }: { items: { label: string; colorVar: string }[] }) {
   return (
@@ -24,8 +25,10 @@ function ToggleCard() {
   const chartMode = useStore((s) => s.chartMode);
   const setChartMode = useStore((s) => s.setChartMode);
   return (
-    <div className="card" style={{ padding: "12px 18px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-      <span style={{ fontSize: 12, fontWeight: 600, color: "var(--t2)" }}>📊 Tampilan Grafik</span>
+    <div className="card card-strip card-strip-between">
+      <span className="strip-label">
+        <Icon name="chart" size={15} /> Tampilan Grafik
+      </span>
       <div className="mode-selector" style={{ display: "inline-grid", gridTemplateColumns: "1fr 1fr", width: "auto" }}>
         <button className={"mode-btn" + (chartMode === "combined" ? " active" : "")} onClick={() => setChartMode("combined")}>
           Gabung
@@ -89,7 +92,7 @@ export default function ChartsPanel({ height = 120, showToggle = true }: { heigh
     };
 
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+      <div className="stack-18">
         {showToggle && <ToggleCard />}
         <div className="card">
           <div className="card-title">
@@ -193,7 +196,7 @@ export default function ChartsPanel({ height = 120, showToggle = true }: { heigh
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+    <div className="stack-18">
       {showToggle && <ToggleCard />}
       <div className="card">
         <div className="card-title">

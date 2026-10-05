@@ -12,8 +12,10 @@ import PIDPanel from "@/components/PIDPanel";
 import PIDPresets from "@/components/PIDPresets";
 import Joystick from "@/components/Joystick";
 import GaitControl from "@/components/GaitControl";
+import Icon, { IconName } from "@/components/Icon";
 
-const MODE_LABEL: Record<string, string> = { mouse: "🖱️ Mouse", keypad: "⌨️ Keypad", analog: "🎮 Analog" };
+const MODE_LABEL: Record<string, string> = { mouse: "Mouse", keypad: "Keypad", analog: "Analog" };
+const MODE_ICON: Record<string, IconName> = { mouse: "mouse", keypad: "keyboard", analog: "gamepad" };
 
 export default function ControlPage() {
   const activeId = useStore((s) => s.activeId);
@@ -42,16 +44,18 @@ export default function ControlPage() {
   return (
     <div className="control-wrap fade-up">
       {/* LEFT */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-        <div className="card" style={{ padding: "14px 18px", display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+      <div className="stack-18">
+        <div className="card card-strip">
           <div className={"pulse-dot" + (ctrl.connected ? "" : " red")} />
           <div style={{ flex: 1, minWidth: 150 }}>
-            <div style={{ fontSize: 13, fontWeight: 600 }}>{displayName(robot)}</div>
-            <div style={{ fontSize: 11, color: "var(--t2)" }}>
+            <div className="strip-name">{displayName(robot)}</div>
+            <div className="strip-sub">
               {ctrl.connected ? "WebSocket • Connected" : "Disconnected — Settings"}
             </div>
           </div>
-          <span className="chip chip-teal">{MODE_LABEL[inputMode]}</span>
+          <span className="chip chip-teal">
+            <Icon name={MODE_ICON[inputMode]} size={13} /> {MODE_LABEL[inputMode]}
+          </span>
           <span className={"chip chip-" + runChip.kind}>{runChip.label}</span>
         </div>
 
@@ -68,7 +72,7 @@ export default function ControlPage() {
       <div className="card">
         <div className="card-title">
           <span>
-            {robot.icon} {displayName(robot)}
+            <span className="card-title-robot"><span className="card-title-emoji">{robot.icon}</span> {displayName(robot)}</span>
           </span>
         </div>
 
@@ -78,7 +82,8 @@ export default function ControlPage() {
             onClick={toggleRun}
             style={{ marginBottom: 14 }}
           >
-            {ctrl.running ? "⏸ Stop Balancing" : "▶ Start Balancing"}
+            <Icon name={ctrl.running ? "pause" : "play"} size={15} />
+            {ctrl.running ? "Stop Balancing" : "Start Balancing"}
           </button>
         ) : (
           <GaitControl />
@@ -89,21 +94,7 @@ export default function ControlPage() {
         <InputModeSelector label={isPid ? "Input Mode (Setpoint)" : "Input Mode (Walk Direction)"} />
 
         {lock && (
-          <div
-            style={{
-              background: "#FFF8E1",
-              border: "1px solid #FFE082",
-              color: "#e65100",
-              borderRadius: 10,
-              padding: "10px 12px",
-              fontSize: 12,
-              fontWeight: 600,
-              textAlign: "center",
-              marginBottom: 14,
-            }}
-          >
-            {lock}
-          </div>
+          <div className="alert-warn">{lock}</div>
         )}
 
         {inputMode === "analog" && <Joystick />}

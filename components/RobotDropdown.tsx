@@ -24,12 +24,7 @@ export default function RobotDropdown() {
 
   return (
     <div style={{ marginBottom: 18 }}>
-      <div
-        style={{
-          fontSize: 11, fontWeight: 700, color: "var(--t2)",
-          textTransform: "uppercase", letterSpacing: ".8px", marginBottom: 8,
-        }}
-      >
+      <div className="field-label">
         Pilih Robot
       </div>
       <div className="robot-dropdown" ref={ref}>

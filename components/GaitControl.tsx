@@ -3,12 +3,13 @@
 import { useStore, canControl } from "@/store/store";
 import { notifyIfBlocked } from "@/lib/control";
 import { Gait } from "@/lib/types";
+import Icon, { IconName } from "@/components/Icon";
 
-const GAITS: { g: Gait; label: string }[] = [
-  { g: "idle", label: "🧍 Idle" },
-  { g: "stand", label: "🤸 Stand" },
-  { g: "balance", label: "⚖️ Balance" },
-  { g: "walk", label: "🚶 Walk" },
+const GAITS: { g: Gait; label: string; icon: IconName }[] = [
+  { g: "idle", label: "Idle", icon: "user" },
+  { g: "stand", label: "Stand", icon: "stand" },
+  { g: "balance", label: "Balance", icon: "scale" },
+  { g: "walk", label: "Walk", icon: "walk" },
 ];
 
 export default function GaitControl() {
@@ -25,16 +26,7 @@ export default function GaitControl() {
 
   return (
     <div style={{ marginBottom: 14 }}>
-      <div
-        style={{
-          fontSize: 10,
-          fontWeight: 700,
-          color: "var(--t2)",
-          textTransform: "uppercase",
-          letterSpacing: ".8px",
-          marginBottom: 10,
-        }}
-      >
+      <div className="field-label">
         Gait Mode
       </div>
       <div className="gait-grid">
@@ -44,6 +36,7 @@ export default function GaitControl() {
             className={"gait-btn" + (x.g === gait ? " active" : "")}
             onClick={() => pick(x.g)}
           >
+            <Icon name={x.icon} size={16} />
             {x.label}
           </button>
         ))}

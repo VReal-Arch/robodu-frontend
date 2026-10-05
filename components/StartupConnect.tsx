@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useStore } from "@/store/store";
 import { ROBOTS } from "@/lib/robots";
+import Icon from "@/components/Icon";
 
 /**
  * Shown once when the dashboard loads. Since robots connect themselves over
@@ -32,7 +33,7 @@ export default function StartupConnect() {
   return (
     <div className="modal-overlay">
       <div className="modal">
-        <div className="modal-icon">📡</div>
+        <div className="modal-icon"><Icon name="signal" size={28} /></div>
         <div className="modal-title">Sambungkan Robot</div>
         <div className="modal-body">
           <b>{online} dari {ROBOTS.length}</b> robot terhubung.
@@ -40,20 +41,13 @@ export default function StartupConnect() {
           Nyalakan robot &amp; pastikan terhubung WiFi, lalu hubungkan tiap robot
           lewat halaman koneksi (Settings).
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 18, maxHeight: 220, overflowY: "auto" }}>
+        <div className="modal-list">
           {ROBOTS.map((r) => (
-            <div
-              key={r.id}
-              style={{
-                display: "flex", alignItems: "center", gap: 10, padding: "7px 12px",
-                background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12.5,
-              }}
-            >
-              <span style={{ fontSize: 15 }}>{r.icon}</span>
+            <div key={r.id} className="modal-list-item">
+              <span className="modal-list-emoji">{r.icon}</span>
               <span style={{ flex: 1, fontWeight: 500 }}>{r.name} · U{r.unit}</span>
               <span
-                className={"chip " + (controls[r.id].connected ? "chip-teal" : "chip-red")}
-                style={{ padding: "2px 9px", fontSize: 10 }}
+                className={"chip chip-sm " + (controls[r.id].connected ? "chip-teal" : "chip-red")}
               >
                 {controls[r.id].connected ? "Online" : "Menunggu…"}
               </span>

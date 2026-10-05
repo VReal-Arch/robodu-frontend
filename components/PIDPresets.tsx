@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useStore } from "@/store/store";
 import { getRobot } from "@/lib/robots";
+import Icon from "@/components/Icon";
 
 export default function PIDPresets() {
   const activeId = useStore((s) => s.activeId);
@@ -25,17 +26,8 @@ export default function PIDPresets() {
   }
 
   return (
-    <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid var(--border)" }}>
-      <div
-        style={{
-          fontSize: 10,
-          fontWeight: 700,
-          color: "var(--t2)",
-          textTransform: "uppercase",
-          letterSpacing: ".8px",
-          marginBottom: 10,
-        }}
-      >
+    <div className="sect-top">
+      <div className="field-label">
         Preset PID
       </div>
 
@@ -50,8 +42,8 @@ export default function PIDPresets() {
             if (e.key === "Enter") save();
           }}
         />
-        <button className="btn btn-primary" style={{ fontSize: 12 }} onClick={save}>
-          💾 Simpan
+        <button className="btn btn-primary btn-sm" onClick={save}>
+          <Icon name="save" size={14} /> Simpan
         </button>
       </div>
 
@@ -71,14 +63,14 @@ export default function PIDPresets() {
               title="Terapkan"
               onClick={() => applyPreset(p.id)}
             >
-              ↥
+              <Icon name="upload" size={14} />
             </button>
             <button
               className="icon-btn danger"
               title="Hapus"
               onClick={() => deletePreset(p.id)}
             >
-              🗑
+              <Icon name="trash" size={14} />
             </button>
           </div>
         ))

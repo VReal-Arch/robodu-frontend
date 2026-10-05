@@ -3,6 +3,7 @@
 import { useStore } from "@/store/store";
 import { ROBOTS, robotsByFamily, getRobot } from "@/lib/robots";
 import { RobotId } from "@/lib/types";
+import Icon from "@/components/Icon";
 
 export default function SettingsPage() {
   const controls = useStore((s) => s.controls);
@@ -32,27 +33,15 @@ export default function SettingsPage() {
 
   return (
     <div className="fade-up">
-      <div
-        style={{
-          background: wsConnected ? "var(--teal-light)" : "#FFEBEE",
-          border: "1px solid " + (wsConnected ? "var(--teal-mid)" : "#FFCDD2"),
-          borderRadius: 14, padding: 22, display: "flex", alignItems: "center", gap: 20, marginBottom: 22,
-        }}
-      >
-        <div
-          style={{
-            width: 60, height: 60, background: wsConnected ? "var(--teal)" : "var(--danger)",
-            borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 26, color: "#fff", flexShrink: 0,
-          }}
-        >
-          {wsConnected ? "🔗" : "⚠️"}
+      <div className={"status-banner " + (wsConnected ? "ok" : "bad")}>
+        <div className="status-orb">
+          <Icon name={wsConnected ? "link" : "alert"} size={26} />
         </div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 20, fontWeight: 700 }}>
+          <div className="status-title">
             {wsConnected ? "Server — Online" : "Server — Terputus"}
           </div>
-          <div style={{ fontSize: 13, color: "var(--t2)", marginTop: 2 }}>
+          <div className="status-sub">
             {wsConnected
               ? `WebSocket hub • ${connectedCount} dari ${ROBOTS.length} robot terhubung`
               : "Menunggu koneksi ke backend (ws)…"}
@@ -63,35 +52,30 @@ export default function SettingsPage() {
       <div className="card">
         <div className="card-title">
           <span>Koneksi Robot</span>
-          <span style={{ display: "flex", gap: 8 }}>
-            <button className="btn btn-outline" style={{ fontSize: 11, padding: "5px 12px" }} onClick={connectAll}>
+          <span className="row-gap-8">
+            <button className="btn btn-outline btn-sm" onClick={connectAll}>
               Hubungkan Semua
             </button>
-            <button className="btn btn-ghost" style={{ fontSize: 11, padding: "5px 12px" }} onClick={disconnectAll}>
+            <button className="btn btn-ghost btn-sm" onClick={disconnectAll}>
               Putus Semua
             </button>
           </span>
         </div>
-        <div style={{ fontSize: 12, color: "var(--t3)", marginBottom: 14 }}>
+        <div className="card-hint">
           Sambungkan tiap robot secara manual. Pastikan robot sudah menyala &amp; terhubung ke WiFi.
         </div>
 
         {groups.map((g) => (
           <div key={g.family} style={{ marginBottom: 16 }}>
-            <div
-              style={{
-                fontSize: 11, fontWeight: 700, letterSpacing: ".6px", textTransform: "uppercase",
-                color: "var(--t2)", margin: "4px 0 8px", display: "flex", alignItems: "center", gap: 8,
-              }}
-            >
-              <span style={{ fontSize: 15 }}>{g.icon}</span> {g.name}
+            <div className="group-label">
+              <span className="group-emoji">{g.icon}</span> {g.name}
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div className="stack-8">
               {g.units.map((r) => {
                 const c = controls[r.id];
                 return (
                   <div key={r.id} className={"robot-item" + (c.connected ? " connected" : "")}>
-                    <div className="robot-avatar" style={{ fontSize: 15, width: 34, height: 34 }}>
+                    <div className="robot-avatar robot-avatar-sm">
                       U{r.unit}
                     </div>
                     <div style={{ flex: 1 }}>
