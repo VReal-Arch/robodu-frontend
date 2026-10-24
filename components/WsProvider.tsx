@@ -6,6 +6,7 @@ import { wsClient } from "@/lib/wsClient";
 import { engine } from "@/lib/engine";
 import { inputState } from "@/lib/format";
 import { getRobot } from "@/lib/robots";
+import { homingFromTelemetry } from "@/lib/homing";
 
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:4000/ws";
 const DT = 0.05;
@@ -23,6 +24,7 @@ export default function WsProvider() {
       if (m.type === "telemetry") {
         engine.pushTelemetry(m);
         st.applyTelemetryState(m.robotId, m.state === "balancing");
+        st.applyHoming(m.robotId, homingFromTelemetry(m));
       } else if (m.type === "state") {
         st.applyServerState(m.robots);
       } else if (m.type === "status") {

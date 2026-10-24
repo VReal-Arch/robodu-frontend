@@ -9,16 +9,25 @@ import RobotDropdown from "@/components/RobotDropdown";
 import ActivityLog from "@/components/ActivityLog";
 import LiveValue from "@/components/LiveValue";
 import PartnerLogos from "@/components/PartnerLogos";
+import { NO_HOMING, homingLabel } from "@/lib/homing";
 import Icon from "@/components/Icon";
 
 export default function DashboardPage() {
   const activeId = useStore((s) => s.activeId);
   const ctrl = useStore((s) => s.controls[s.activeId]);
   const emergencyStop = useStore((s) => s.emergencyStop);
+  const homing = useStore((s) => s.homing[s.activeId] ?? NO_HOMING);
   const robot = getRobot(activeId);
 
   const isPid = robot.type === "pid";
-  const status = !ctrl.connected ? "Offline" : isPid ? (ctrl.running ? "Balancing" : "Idle") : ctrl.gait;
+  const status = !ctrl.connected ? "Offline" : isPid ? (ctrl.running ? "Balancing" : homing.active ? "Homing" : "Idle") : ctrl.gait;
+  const statusSub = !ctrl.connected
+    ? "Disconnected"
+    : homing.active
+    ? "Mencari posisi nol"
+    : homing.needed && !ctrl.running
+    ? homingLabel(homing)
+    : "Loop active";
   const varLabel = isPid ? robot.yVar : "Body Roll";
 
   return (
@@ -40,7 +49,7 @@ export default function DashboardPage() {
           <div className="stat-value stat-value-text">
             {status}
           </div>
-          <div className="stat-sub">{ctrl.connected ? "Loop active" : "Disconnected"}</div>
+          <div className="stat-sub">{statusSub}</div>
         </div>
         <div className="stat-card">
           <div className="stat-icon"><Icon name="target" size={20} /></div>

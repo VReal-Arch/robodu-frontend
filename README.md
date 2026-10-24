@@ -23,6 +23,10 @@ npm run build && npm start
 - Grafik real-time: setpoint vs actual, error, output PID — toggle **Gabung / Pisah**
 - Input setpoint: **mouse / keypad / analog** (gamepad asli + demo joystick)
 - Fail-safe: **E-Stop**, watchdog, auto-stop saat koneksi putus, modal notifikasi
+- **Homing** untuk kit yang wajib homing (mis. Rotary Inverted Pendulum): urutan **Homing → Start → Stop**.
+  Tombol Start terkunci sampai kit melapor sudah homing. Kit mana yang wajib homing ditentukan firmware
+  master (`HOMING_TYPES`): dashboard mengenalinya dari field `homed` di telemetry, jadi tidak ada daftar
+  yang perlu diubah di sini
 - Dark mode, burger menu drawer
 
 > Dashboard ini **live** — mengambil data telemetry dari backend lewat WebSocket

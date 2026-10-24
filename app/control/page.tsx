@@ -12,6 +12,8 @@ import PIDPanel from "@/components/PIDPanel";
 import PIDPresets from "@/components/PIDPresets";
 import Joystick from "@/components/Joystick";
 import GaitControl from "@/components/GaitControl";
+import HomingPanel from "@/components/HomingPanel";
+import { NO_HOMING, startBlockedByHoming } from "@/lib/homing";
 import Icon, { IconName } from "@/components/Icon";
 
 const MODE_LABEL: Record<string, string> = { mouse: "Mouse", keypad: "Keypad", analog: "Analog" };
@@ -24,11 +26,14 @@ export default function ControlPage() {
   const setRunning = useStore((s) => s.setRunning);
   const addLog = useStore((s) => s.addLog);
   const ok = useStore((s) => canControl(s));
+  const homing = useStore((s) => s.homing[s.activeId] ?? NO_HOMING);
   const robot = getRobot(activeId);
   const isPid = robot.type === "pid";
   const lock = lockReason();
+  const startLocked = !ctrl.running && startBlockedByHoming(homing);
 
   function toggleRun() {
+    if (!ctrl.running && startLocked) return; // must be homed first (button is disabled too)
     if (!ctrl.running && notifyIfBlocked()) return;
     const next = !ctrl.running;
     setRunning(activeId, next);
@@ -38,8 +43,11 @@ export default function ControlPage() {
   const runChip = isPid
     ? ctrl.running
       ? { label: "● Balancing", kind: "teal" }
+      : homing.active
+      ? { label: "◌ Homing", kind: "warn" }
       : { label: "○ Idle", kind: "warn" }
     : { label: ctrl.gait, kind: "teal" };
+
 
   return (
     <div className="control-wrap fade-up">
@@ -76,10 +84,14 @@ export default function ControlPage() {
           </span>
         </div>
 
+        {isPid && <HomingPanel />}
+
         {isPid ? (
           <button
             className={"btn btn-full " + (ctrl.running ? "btn-danger" : "btn-primary")}
             onClick={toggleRun}
+            disabled={startLocked}
+            title={startLocked ? "Selesaikan homing dulu" : undefined}
             style={{ marginBottom: 14 }}
           >
             <Icon name={ctrl.running ? "pause" : "play"} size={15} />

@@ -5,6 +5,7 @@ import {
   CommandMsg,
   ControlState,
   Gait,
+  HomingInfo,
   InputMode,
   LogEntry,
   ModalSpec,
@@ -14,7 +15,8 @@ import {
   RobotId,
   Theme,
 } from "@/lib/types";
-import { getRobot, initialControls } from "@/lib/robots";
+import { displayName, getRobot, initialControls } from "@/lib/robots";
+import { NO_HOMING } from "@/lib/homing";
 import { nowHM } from "@/lib/format";
 import { addPreset, loadPresets, removePreset } from "@/lib/presets";
 import { wsClient } from "@/lib/wsClient";
@@ -22,6 +24,9 @@ import { wsClient } from "@/lib/wsClient";
 const clamp = (v: number, a: number, b: number) => (v < a ? a : v > b ? b : v);
 
 let modalSeq = 1;
+
+/** Per robot: has the master reacted to the last homing request yet? */
+const homingSeen: Record<RobotId, boolean> = {};
 
 function sendCmd(robotId: RobotId, action: CommandAction, payload?: CommandMsg["payload"]) {
   wsClient.send({ type: "command", robotId, source: "web", action, payload });
@@ -44,6 +49,8 @@ interface State {
   demoMode: boolean;
   // per-robot control (desired state)
   controls: Record<RobotId, ControlState>;
+  // per-robot homing status, from telemetry (only kits that need homing have needed=true)
+  homing: Record<RobotId, HomingInfo>;
   // presets / logs / modals
   presets: Preset[];
   logs: LogEntry[];
@@ -79,6 +86,10 @@ interface State {
   applyStatus: (id: RobotId, connected: boolean) => void;
   applyTelemetryState: (id: RobotId, running: boolean) => void;
   applyEstop: (active: boolean) => void;
+  applyHoming: (id: RobotId, info: HomingInfo) => void;
+
+  startHoming: (id: RobotId) => void;
+  cancelHoming: (id: RobotId) => void;
 
   emergencyStop: () => void;
   resetEstop: () => void;
@@ -107,6 +118,7 @@ export const useStore = create<State>((set, get) => ({
   gamepadIndex: null,
   demoMode: false,
   controls: initialControls(),
+  homing: {},
   presets: [],
   logs: [
     { text: "Sistem aktif", time: "14:25", active: false },
@@ -269,6 +281,66 @@ export const useStore = create<State>((set, get) => ({
     }),
   applyEstop: (active) => set({ estop: active }),
 
+  applyHoming: (id, info) => {
+    const prev = get().homing[id] ?? NO_HOMING;
+    if (
+      prev.needed === info.needed &&
+      prev.homed === info.homed &&
+      prev.active === info.active &&
+      prev.failed === info.failed
+    )
+      return; // telemetry arrives ~10x/s; only touch the store when something changed
+    set((s) => ({ homing: { ...s.homing, [id]: info } }));
+
+    if (info.active || info.failed || (info.homed && !prev.homed)) homingSeen[id] = true;
+    if (!info.needed) return;
+
+    const name = displayName(getRobot(id));
+    if (info.active && !prev.active) get().addLog("Homing berjalan — " + name);
+    if (prev.active && info.homed) get().addLog("Homing selesai — " + name);
+    if (info.failed && !prev.failed && prev.needed) {
+      get().addLog("Homing GAGAL — " + name);
+      get().pushModal({
+        icon: "⚠️",
+        title: "Homing Gagal",
+        body:
+          `<b>${name}</b> gagal menemukan posisi nol (titik acuan tidak ketemu atau waktu habis). ` +
+          "Periksa sensor / limit switch dan pastikan lengan bebas dari halangan, lalu coba homing lagi.",
+        actions: [{ label: "Mengerti", style: "primary" }],
+      });
+    }
+  },
+
+  startHoming: (id) => {
+    const s = get();
+    const ctrl = s.controls[id];
+    const h = s.homing[id] ?? NO_HOMING;
+    if (!ctrl || !ctrl.connected || s.estop || ctrl.running || h.active) return;
+    homingSeen[id] = false;
+    sendCmd(id, "homing");
+    s.addLog("Homing diminta — " + displayName(getRobot(id)));
+    // The master silently ignores a homing command it cannot run (slave not
+    // answering, kit running, ...). If nothing changed after a few seconds,
+    // say so instead of leaving the user waiting.
+    setTimeout(() => {
+      if (homingSeen[id]) return;
+      get().pushModal({
+        icon: "⚠️",
+        title: "Homing Tidak Dimulai",
+        body:
+          "Robot tidak menjawab perintah homing. Pastikan kit tersambung ke master (kabel JST), " +
+          "kit sedang berhenti, lalu coba lagi.",
+        actions: [{ label: "Mengerti", style: "primary" }],
+      });
+    }, 3500);
+  },
+  cancelHoming: (id) => {
+    const h = get().homing[id] ?? NO_HOMING;
+    if (!h.active) return;
+    sendCmd(id, "stop"); // the master cancels a running homing when it gets "stop"
+    get().addLog("Homing dibatalkan — " + displayName(getRobot(id)));
+  },
+
   emergencyStop: () => {
     set((s) => {
       const controls = { ...s.controls };
@@ -325,6 +397,7 @@ export function canControl(s: State): boolean {
   if (s.estop) return false;
   const ctrl = s.controls[s.activeId];
   if (!ctrl.connected) return false;
+  if (s.homing[s.activeId]?.active) return false; // the slave is driving the motor
   if (s.inputMode === "analog" && !s.gamepadConnected && !s.demoMode) return false;
   return true;
 }

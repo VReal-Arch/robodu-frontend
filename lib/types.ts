@@ -53,6 +53,14 @@ export interface HumanoidRobotConfig {
 
 export type RobotConfig = PidRobotConfig | HumanoidRobotConfig;
 
+/** Homing status of one robot, derived from its telemetry. */
+export interface HomingInfo {
+  needed: boolean; // this kit must be homed before it can start
+  homed: boolean; // zero position is valid
+  active: boolean; // homing is running right now
+  failed: boolean; // the last homing attempt failed / timed out
+}
+
 /** Desired / control state (set by user, read by the simulation/WS layer). */
 export interface ControlState {
   connected: boolean;
@@ -93,7 +101,7 @@ export interface ModalSpec {
 }
 
 // ---- WebSocket message contract (shared with backend) ----
-export type CommandAction = "set_setpoint" | "set_pid" | "start" | "stop" | "estop" | "set_gait";
+export type CommandAction = "set_setpoint" | "set_pid" | "start" | "stop" | "estop" | "set_gait" | "homing";
 
 export interface TelemetryMsg {
   type: "telemetry";
@@ -105,8 +113,11 @@ export interface TelemetryMsg {
   output: number;
   pid: PID;
   imu?: { roll: number; pitch: number };
-  state: "balancing" | "idle" | "fault";
+  state: "balancing" | "idle" | "fault" | "homing";
   health?: { sensor: boolean; motor: boolean };
+  /** Only sent by kits that must be homed before start (e.g. rot_pend). */
+  homed?: boolean;
+  homingFailed?: boolean;
 }
 
 export interface CommandMsg {

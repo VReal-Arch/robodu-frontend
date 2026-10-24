@@ -3,11 +3,12 @@
 import { ReactElement } from "react";
 import { useStore } from "@/store/store";
 import Icon, { IconName } from "@/components/Icon";
+import { NO_HOMING, homingLabel } from "@/lib/homing";
 
 const MODE_ICON: Record<string, IconName> = { mouse: "mouse", keypad: "keyboard", analog: "gamepad" };
 const MODE_LABEL: Record<string, string> = { mouse: "Mouse", keypad: "Keypad", analog: "Analog" };
 
-function Chip({ label, kind }: { label: string; kind: "teal" | "red" }) {
+function Chip({ label, kind }: { label: string; kind: "teal" | "red" | "warn" }) {
   return (
     <span className={"chip chip-sm chip-" + kind}>
       {label}
@@ -20,6 +21,7 @@ export default function SafetyPanel() {
   const wsConnected = useStore((s) => s.wsConnected);
   const inputMode = useStore((s) => s.inputMode);
   const estop = useStore((s) => s.estop);
+  const homing = useStore((s) => s.homing[s.activeId] ?? NO_HOMING);
   const resetEstop = useStore((s) => s.resetEstop);
 
   const rows: { ic: IconName; l: string; chip: ReactElement }[] = [
@@ -28,6 +30,9 @@ export default function SafetyPanel() {
     { ic: "pulse", l: "Heartbeat", chip: connected ? <Chip label="Live" kind="teal" /> : <Chip label="No signal" kind="red" /> },
     { ic: MODE_ICON[inputMode], l: "Input Source", chip: <Chip label={MODE_LABEL[inputMode]} kind="teal" /> },
     { ic: "clock", l: "Watchdog Timer", chip: <Chip label="Armed" kind="teal" /> },
+    ...(homing.needed
+      ? [{ ic: "target" as IconName, l: "Homing", chip: <Chip label={homingLabel(homing)} kind={homing.failed ? "red" : homing.homed && !homing.active ? "teal" : "warn"} /> }]
+      : []),
     { ic: "stop", l: "Emergency Stop", chip: estop ? <Chip label="ACTIVE" kind="red" /> : <Chip label="Clear" kind="teal" /> },
   ];
 
