@@ -387,3 +387,72 @@ a{color:inherit;text-decoration:none}
   .status-title{font-size:24px}
   .modal{padding:24px 20px}
 }
+
+/* ---------- PANDUAN (/panduan) ---------- */
+.guide{max-width:1100px}
+.guide-intro{margin-bottom:34px}
+.guide-lead{font-size:16px;line-height:1.6;color:var(--t1);max-width:68ch;margin-bottom:20px}
+.guide-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:22px}
+.guide-flow-item{display:inline-flex;align-items:center;gap:6px}
+.guide-flow-box{background:var(--bg);border:1px solid var(--border);border-left:3px solid var(--teal);padding:7px 12px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.guide-flow-arrow{color:var(--teal);font-weight:700}
+.guide-toc{display:flex;flex-wrap:wrap;gap:6px;padding-top:18px;border-top:1px solid var(--border)}
+.guide-toc-item{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:6px 12px;border:1px solid var(--border);background:var(--surface);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t2);transition:border-color .12s,color .12s}
+.guide-toc-item span{font-family:var(--font-mono);color:var(--teal-dark)}
+.guide-toc-item:hover{border-color:var(--teal);color:var(--t1)}
+.guide-section{margin-bottom:40px;scroll-margin-top:72px}
+.guide-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px}
+.guide-no{flex-shrink:0;min-width:42px;height:42px;padding:0 6px;background:var(--teal);color:#fff;font-family:var(--font-display);font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:center;clip-path:polygon(0 0,100% 0,100% calc(100% - 9px),calc(100% - 9px) 100%,0 100%)}
+.guide-h2{font-family:var(--font-display);font-size:28px;font-weight:700;line-height:1.05;letter-spacing:.02em;text-transform:uppercase}
+.guide-sub{font-size:14px;color:var(--t2);line-height:1.5;margin-top:4px}
+.guide-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+.guide-grid>*{min-width:0}
+.guide-steps{list-style:none;display:flex;flex-direction:column;gap:16px}
+.guide-step{display:flex;gap:14px;align-items:flex-start}
+.guide-step-no{flex-shrink:0;width:26px;height:26px;border:1px solid var(--teal);color:var(--teal-dark);font-family:var(--font-mono);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.guide-step-title{font-size:15px;font-weight:700;line-height:1.4}
+.guide-step-body{font-size:14px;color:var(--t2);line-height:1.6;margin-top:3px}
+.guide-note{font-size:13px;color:var(--t2);line-height:1.55;margin-top:8px;padding:8px 12px;background:var(--bg);border-left:3px solid var(--teal-mid)}
+.guide-check{list-style:none;display:flex;flex-direction:column;gap:10px}
+.guide-check li{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.6}
+.guide-check-mark{flex-shrink:0;width:20px;height:20px;margin-top:2px;background:var(--teal-light);color:var(--teal-dark);display:flex;align-items:center;justify-content:center}
+.guide-table-wrap{overflow-x:auto}
+.guide-table{width:100%;border-collapse:collapse;font-size:14px}
+.guide-table th{text-align:left;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t2);padding:8px;border-bottom:1px solid var(--border)}
+.guide-table td{padding:10px 8px;border-bottom:1px solid var(--border);vertical-align:top}
+.guide-table td:first-child,.guide-table td:last-child{white-space:nowrap}
+.guide code{font-family:var(--font-mono);font-size:12px;background:var(--bg);border:1px solid var(--border);padding:1px 6px}
+.guide-pill{display:inline-block;background:var(--teal);color:#fff;padding:2px 8px;font-family:var(--font-mono);font-size:11px;font-weight:700}
+.guide-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.guide-tab{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:10px 16px;border:1px solid var(--border);background:var(--surface);color:var(--t2);font-family:inherit;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:border-color .12s,color .12s,background .12s}
+.guide-tab:hover{border-color:var(--teal);color:var(--t1)}
+.guide-tab.active{background:var(--teal);border-color:var(--teal);color:#fff}
+.guide-tab:focus-visible,.guide-toc-item:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.guide-kit-sum{margin:-6px 0 14px}
+.guide-setpoint{display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;font-size:14px;margin-bottom:14px}
+.guide-setpoint span{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--t2)}
+.guide-warn{display:flex;gap:10px;align-items:flex-start;background:#FFF8E1;border:1px solid #FFE082;border-left:3px solid var(--warn);color:#8a4b00;padding:11px 14px;font-size:14px;line-height:1.55;margin-bottom:18px}
+.guide-warn svg{flex-shrink:0;margin-top:2px}
+html.dark .guide-warn{background:rgba(255,167,38,.12);color:#FFCC80;border-color:rgba(255,167,38,.3)}
+.guide-kit-grid{gap:26px 32px;margin-top:6px}
+.guide-status{list-style:none;display:flex;flex-direction:column;gap:14px}
+.guide-status li{display:grid;grid-template-columns:190px 1fr;gap:14px;align-items:start;font-size:14px;line-height:1.55}
+.guide-status .chip{justify-self:start}
+.guide-faq{display:flex;flex-direction:column;gap:8px}
+.guide-faq-item{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--teal)}
+.guide-faq-item summary{cursor:pointer;min-height:48px;padding:14px 20px;font-size:15px;font-weight:700;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.guide-faq-item summary::-webkit-details-marker{display:none}
+.guide-faq-item summary::after{content:"+";font-family:var(--font-mono);color:var(--teal-dark);font-size:18px}
+.guide-faq-item[open] summary::after{content:"−"}
+.guide-faq-item summary:focus-visible{outline:2px solid var(--teal);outline-offset:-2px}
+.guide-faq-body{padding:0 20px 18px;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.6}
+.guide-label{display:inline-block;min-width:86px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t2)}
+@media(max-width:900px){.guide-grid{grid-template-columns:minmax(0,1fr)}.guide-status li{grid-template-columns:1fr;gap:6px}}
+@media(max-width:600px){.guide-h2{font-size:24px}.guide-label{display:block}.guide-tab{flex:1 1 calc(50% - 6px);justify-content:center}}
+
+/* Topbar: E-Stop tidak boleh terdorong keluar layar walau menu bertambah.
+   Menu yang tidak muat bisa digeser; tombol aksi selalu utuh. */
+.topnav{min-width:0;overflow-x:auto;scrollbar-width:none}
+.topnav::-webkit-scrollbar{display:none}
+.topbar-actions{flex-shrink:0}
+@media(min-width:1024px) and (max-width:1279px){.topbar{gap:16px;padding:0 20px}.topnav-link{padding:0 10px;font-size:12px;letter-spacing:.06em}}

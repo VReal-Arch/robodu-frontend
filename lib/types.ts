@@ -141,4 +141,6 @@ export type ServerMsg =
   | TelemetryMsg
   | { type: "state"; robots: Record<string, PublicRobotState> }
   | { type: "status"; robotId: RobotId; connected: boolean }
-  | { type: "estop"; active: boolean };
+  | { type: "estop"; active: boolean }
+  | { type: "pong"; ts: number }
+  | { type: "broker"; connected: boolean };

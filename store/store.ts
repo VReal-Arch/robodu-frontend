@@ -29,7 +29,10 @@ let modalSeq = 1;
 const homingSeen: Record<RobotId, boolean> = {};
 
 function sendCmd(robotId: RobotId, action: CommandAction, payload?: CommandMsg["payload"]) {
-  wsClient.send({ type: "command", robotId, source: "web", action, payload });
+  if (!wsClient.send({ type: "command", robotId, source: "web", action, payload })) {
+    // Jangan diam-diam: pengguna harus tahu perintahnya tidak sampai.
+    useStore.getState().addLog("⚠ Perintah " + action + " tidak terkirim: server terputus");
+  }
 }
 
 interface State {
@@ -43,6 +46,12 @@ interface State {
   chartMode: ChartMode;
   estop: boolean;
   wsConnected: boolean;
+  // false = server tersambung ke dashboard tapi kehilangan broker MQTT
+  brokerConnected: boolean;
+  // robot yang tadinya dihubungkan pengguna lalu putus SENDIRI (watchdog
+  // server). Begitu robot online lagi, koneksinya dipulihkan otomatis tanpa
+  // harus ke Settings. Start tetap harus ditekan ulang (alat sudah di-stop).
+  autoDropped: Record<RobotId, boolean>;
   gamepadConnected: boolean;
   gamepadId: string | null;
   gamepadIndex: number | null;
@@ -86,6 +95,7 @@ interface State {
   applyStatus: (id: RobotId, connected: boolean) => void;
   applyTelemetryState: (id: RobotId, running: boolean) => void;
   applyEstop: (active: boolean) => void;
+  applyBroker: (connected: boolean) => void;
   applyHoming: (id: RobotId, info: HomingInfo) => void;
 
   startHoming: (id: RobotId) => void;
@@ -113,6 +123,8 @@ export const useStore = create<State>((set, get) => ({
   chartMode: "combined",
   estop: false,
   wsConnected: false,
+  brokerConnected: true,
+  autoDropped: {} as Record<RobotId, boolean>,
   gamepadConnected: false,
   gamepadId: null,
   gamepadIndex: null,
@@ -220,7 +232,8 @@ export const useStore = create<State>((set, get) => ({
         if (getRobot(id).type === "pid") next.running = false;
         else next.gait = "idle";
       }
-      return { controls: { ...s.controls, [id]: next } };
+      // pilihan manual pengguna menghapus status "menunggu tersambung lagi"
+      return { controls: { ...s.controls, [id]: next }, autoDropped: { ...s.autoDropped, [id]: false } };
     });
     get().addLog((v ? "Tersambung: " : "Diputus: ") + getRobot(id).name);
   },
@@ -241,38 +254,67 @@ export const useStore = create<State>((set, get) => ({
         else off.gait = "idle";
         controls[id] = off;
       }
-      return { controls };
+      return { controls, autoDropped: {} as Record<RobotId, boolean> };
     });
     get().addLog("Semua robot diputus");
   },
-  applyServerState: (robots) =>
-    // sync desired values from backend, but keep the manual connection flag
+  applyServerState: (robots) => {
+    // sync desired values from backend, but keep the manual connection flag.
+    // Snapshot juga datang setiap kali WebSocket tersambung ulang, jadi status
+    // online/offline robot ikut disamakan di sini.
+    const dropped: RobotId[] = [];
+    const back: RobotId[] = [];
     set((s) => {
       const controls = { ...s.controls };
+      const autoDropped = { ...s.autoDropped };
       for (const id of Object.keys(robots) as RobotId[]) {
         const r = robots[id];
         if (!controls[id]) continue;
+        let connected = controls[id].connected;
+        if (connected && r.connected === false) {
+          connected = false;
+          autoDropped[id] = true;
+          dropped.push(id);
+        } else if (!connected && autoDropped[id] && r.connected) {
+          connected = true;
+          autoDropped[id] = false;
+          back.push(id);
+        }
         controls[id] = {
-          connected: controls[id].connected,
-          running: r.running,
+          connected,
+          running: connected ? r.running : false,
           gait: r.gait,
           setpoint: r.setpoint,
           pid: r.pid,
         };
       }
-      return { controls };
-    }),
-  applyStatus: (id, connected) =>
-    // Connect is manual (via Settings). Only honor backend DISCONNECT as a
-    // fail-safe when a robot drops off; ignore auto-connect.
-    set((s) => {
-      if (!s.controls[id] || connected) return {} as Partial<State>;
-      if (!s.controls[id].connected) return {} as Partial<State>;
+      return { controls, autoDropped };
+    });
+    for (const id of dropped) get().addLog("Koneksi terputus: " + getRobot(id).name + " (menunggu)");
+    for (const id of back) get().addLog("Tersambung lagi: " + getRobot(id).name);
+  },
+  applyStatus: (id, connected) => {
+    // Connect pertama tetap manual (via Settings). Putus dari server
+    // (watchdog) menandai robot "menunggu"; begitu online lagi, koneksi yang
+    // tadinya dipilih pengguna dipulihkan otomatis.
+    const s = get();
+    if (!s.controls[id]) return;
+    if (!connected) {
+      if (!s.controls[id].connected) return;
       const next = { ...s.controls[id], connected: false };
       if (getRobot(id).type === "pid") next.running = false;
       else next.gait = "idle";
-      return { controls: { ...s.controls, [id]: next } };
-    }),
+      set({ controls: { ...s.controls, [id]: next }, autoDropped: { ...s.autoDropped, [id]: true } });
+      get().addLog("Koneksi terputus: " + getRobot(id).name + " (menunggu)");
+      return;
+    }
+    if (!s.autoDropped[id] || s.controls[id].connected) return;
+    set({
+      controls: { ...s.controls, [id]: { ...s.controls[id], connected: true } },
+      autoDropped: { ...s.autoDropped, [id]: false },
+    });
+    get().addLog("Tersambung lagi: " + getRobot(id).name + " (tekan Start untuk melanjutkan)");
+  },
   applyTelemetryState: (id, running) =>
     // update running only for robots the user has connected
     set((s) => {
@@ -280,6 +322,11 @@ export const useStore = create<State>((set, get) => ({
       return { controls: { ...s.controls, [id]: { ...s.controls[id], running } } };
     }),
   applyEstop: (active) => set({ estop: active }),
+  applyBroker: (connected) => {
+    if (get().brokerConnected === connected) return;
+    set({ brokerConnected: connected });
+    get().addLog(connected ? "Server tersambung lagi ke broker MQTT" : "Server kehilangan broker MQTT");
+  },
 
   applyHoming: (id, info) => {
     const prev = get().homing[id] ?? NO_HOMING;
@@ -305,7 +352,7 @@ export const useStore = create<State>((set, get) => ({
         title: "Homing Gagal",
         body:
           `<b>${name}</b> gagal menemukan posisi nol (titik acuan tidak ketemu atau waktu habis). ` +
-          "Periksa sensor / limit switch dan pastikan lengan bebas dari halangan, lalu coba homing lagi.",
+          "Biarkan lengan di tengah dan pendulum menggantung diam selama homing (kit dengan limit switch: periksa limit switch-nya), lalu coba homing lagi.",
         actions: [{ label: "Mengerti", style: "primary" }],
       });
     }

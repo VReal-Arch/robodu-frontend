@@ -28,12 +28,12 @@ export default function HomingPanel() {
   const kind = h.failed ? "red" : h.homed && !h.active ? "teal" : "warn";
 
   const message = h.active
-    ? "Kit sedang mencari posisi nol. Jangan sentuh lengan sampai selesai."
+    ? "Kit sedang mencari posisi nol. Jangan sentuh lengan dan pendulum sampai selesai."
     : h.failed
-    ? "Homing gagal — titik acuan tidak ketemu atau waktu habis. Periksa sensor / limit switch lalu coba lagi."
+    ? "Homing gagal — lengan atau pendulum masih bergerak sampai waktu habis. Diamkan lalu coba lagi."
     : h.homed
     ? "Posisi nol valid. Start Balancing sudah bisa dipakai."
-    : "Kit ini wajib homing sebelum bisa dijalankan. Pastikan lengan bebas dari halangan, lalu tekan Mulai Homing.";
+    : "Kit ini wajib homing sebelum bisa dijalankan. Letakkan lengan di tengah, biarkan pendulum menggantung diam, lalu tekan Mulai Homing.";
 
   const whyDisabled = !connected
     ? "Sambungkan robot di menu Settings."

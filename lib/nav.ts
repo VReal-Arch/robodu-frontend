@@ -6,6 +6,7 @@ export const NAV: { href: string; icon: IconName; label: string }[] = [
   { href: "/control", icon: "sliders", label: "Control & Tuning" },
   { href: "/data", icon: "chart", label: "Data & Charts" },
   { href: "/settings", icon: "plug", label: "Settings" },
+  { href: "/panduan", icon: "info", label: "Panduan" },
 ];
 
 /** Page titles: [title, eyebrow]. */
@@ -14,4 +15,5 @@ export const TITLES: Record<string, [string, string]> = {
   "/control": ["Control & Tuning", "PID + Setpoint"],
   "/data": ["Data & Charts", "Live Telemetry"],
   "/settings": ["Settings", "Connections"],
+  "/panduan": ["Panduan", "Koneksi & Penggunaan"],
 };

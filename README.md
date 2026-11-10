@@ -15,6 +15,8 @@ Build production:
 npm run build && npm start
 ```
 
+Deploy ke robodu.id (Hostinger Node.js Web App): lihat **DEPLOY_HOSTINGER.md**.
+
 ## Fitur
 
 - Pemilih robot (dropdown, hanya di Dashboard)
@@ -59,7 +61,7 @@ Data langsung mengalir ke grafik, dan menggeser PID/setpoint di web diteruskan k
 ## Struktur
 
 ```
-app/                halaman (layout, dashboard, control, data, settings)
+app/                halaman (layout, dashboard, control, data, settings, panduan)
 components/          komponen UI (charts, panel kontrol, sidebar, dll)
 hooks/              useInputDevices (keyboard + gamepad)
 lib/

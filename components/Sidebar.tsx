@@ -57,6 +57,16 @@ export default function Sidebar() {
             </span>
             <span>Settings</span>
           </Link>
+          <Link
+            href="/panduan"
+            className={"nav-item" + (pathname === "/panduan" ? " active" : "")}
+            onClick={closeSidebar}
+          >
+            <span className="nav-icon">
+              <Icon name="info" size={18} />
+            </span>
+            <span>Panduan</span>
+          </Link>
         </nav>
 
         <div className="sidebar-bottom">

@@ -13,6 +13,12 @@ export default function Topbar() {
   const theme = useStore((s) => s.theme);
   const emergencyStop = useStore((s) => s.emergencyStop);
   const connected = useStore((s) => s.controls[s.activeId].connected);
+  const waiting = useStore((s) => !!s.autoDropped[s.activeId]);
+  const wsConnected = useStore((s) => s.wsConnected);
+  const brokerConnected = useStore((s) => s.brokerConnected);
+  // Online hanya kalau robotnya tersambung DAN jalur ke server hidup.
+  const online = connected && wsConnected && brokerConnected;
+  const reconnecting = !online && (waiting || (connected && (!wsConnected || !brokerConnected)));
 
   return (
     <header className="topbar">
@@ -38,12 +44,14 @@ export default function Topbar() {
       </nav>
 
       <div className="topbar-actions">
-        <div className={"chip " + (connected ? "chip-teal" : "chip-red")}>
-          {connected ? (
+        <div className={"chip " + (online ? "chip-teal" : reconnecting ? "chip-warn" : "chip-red")}>
+          {online ? (
             <>
               <span className="pulse-dot" style={{ width: 6, height: 6 }} />
               &nbsp;Online
             </>
+          ) : reconnecting ? (
+            "● Menyambung…"
           ) : (
             "● Offline"
           )}

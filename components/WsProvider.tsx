@@ -31,6 +31,8 @@ export default function WsProvider() {
         st.applyStatus(m.robotId, m.connected);
       } else if (m.type === "estop") {
         st.applyEstop(m.active);
+      } else if (m.type === "broker") {
+        st.applyBroker(m.connected);
       }
     });
     wsClient.connect(WS_URL);
