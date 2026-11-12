@@ -12,7 +12,7 @@
     "@fontsource-variable/jetbrains-mono": "^5.3.0",
     "@fontsource/barlow": "^5.3.0",
     "@fontsource/barlow-condensed": "^5.3.0",
-    "next": "^15.5.28",
+    "next": "^15.5.21",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "zustand": "^4.5.4"
@@ -21,18 +21,12 @@
     "@types/node": "^20.14.0",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "@typescript-eslint/eslint-plugin": "^8.72.2",
-    "@typescript-eslint/parser": "^8.72.2",
-    "eslint-config-next": "^15.5.28",
     "typescript": "^5.5.4"
   },
   "overrides": {
     "postcss": "^8.5.26",
-    "sharp": "^0.35.5",
-    "nanoid": "^3.3.18",
-    "@typescript-eslint/typescript-estree": {
-      "minimatch": "11.0.3"
-    }
+    "sharp": "^0.35.0",
+    "nanoid": "^3.3.18"
   },
   "browserslist": [
     "chrome >= 111",

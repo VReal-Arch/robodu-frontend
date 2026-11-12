@@ -352,7 +352,9 @@ export const useStore = create<State>((set, get) => ({
         title: "Homing Gagal",
         body:
           `<b>${name}</b> gagal menemukan posisi nol (titik acuan tidak ketemu atau waktu habis). ` +
-          "Biarkan lengan di tengah dan pendulum menggantung diam selama homing (kit dengan limit switch: periksa limit switch-nya), lalu coba homing lagi.",
+          (getRobot(id).family === "lin_pend"
+            ? "Kereta tidak sampai ke limit switch. Periksa catu motor 12 V, kabel driver, dan limit switch, lalu coba homing lagi."
+            : "Biarkan lengan di tengah dan pendulum menggantung diam selama homing, lalu coba homing lagi."),
         actions: [{ label: "Mengerti", style: "primary" }],
       });
     }

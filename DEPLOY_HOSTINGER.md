@@ -66,3 +66,6 @@ diupload ke `public_html` (file `public/.htaccess` ikut ter-copy). Mode ini
   peringatan saat perintah tidak terkirim.
 - Pesan homing Rotary disesuaikan (lengan di tengah, pendulum diam).
 - Tombol E-Stop tidak lagi terdorong keluar layar pada lebar 1024–1279 px.
+- **12 November 2026:** panel Homing kini juga muncul untuk Linear (perlu firmware
+  master dengan `HOMING_TYPES { "rot_pend", "lin_pend" }`). Petunjuk dan pesan gagal
+  homing berbeda untuk Rotary dan Linear. Panduan bagian Linear diperbarui.

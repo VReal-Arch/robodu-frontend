@@ -116,7 +116,7 @@ export const DI_WEB: Langkah[] = [
   },
   {
     judul: "Ikuti langkah sesuai kit",
-    isi: "Setiap kit punya urutan sendiri (lihat bagian Penggunaan per Kit). Kit berjalan setelah Start Balancing ditekan. Rotary wajib homing dulu lewat tombol Mulai Homing.",
+    isi: "Setiap kit punya urutan sendiri (lihat bagian Penggunaan per Kit). Kit berjalan setelah Start Balancing ditekan. Rotary dan Linear wajib homing dulu lewat tombol Mulai Homing.",
   },
   {
     judul: "Pantau dan atur",
@@ -170,9 +170,11 @@ export const KIT: PanduanKit[] = [
     ],
     langkah: [
       {
-        judul: "Tekan Start Balancing",
-        isi: "Kit menjalankan homing otomatis: kereta menyentuh limit kiri dan kanan untuk mengukur panjang rel, lalu kembali ke tengah.",
+        judul: "Tekan Mulai Homing",
+        isi: "Kereta bergerak menyentuh limit kiri dan kanan untuk mengukur panjang rel, lalu berhenti di tengah. Tunggu sampai status Sudah homing.",
+        catatan: "Kalau kereta tidak bergerak dan homing gagal, periksa catu motor 12 V dan limit switch, lalu tekan Mulai Homing lagi.",
       },
+      { judul: "Tekan Start Balancing", isi: "Tombol ini baru aktif setelah homing selesai." },
       { judul: "Swing-up", isi: "Kereta mengayun pendulum bolak-balik sampai cukup tinggi." },
       { judul: "Balancing", isi: "Begitu pendulum dekat posisi tegak, kit berpindah ke mode balancing dan kereta kembali ke tengah rel." },
     ],
@@ -181,7 +183,10 @@ export const KIT: PanduanKit[] = [
       "Kereta yang ditahan atau macet membuat kit berhenti dengan status fault.",
       "Gain PID bisa diubah dari dashboard (satuan PWM).",
     ],
-    berhenti: ["Tekan Stop. Motor langsung mati dan pendulum jatuh ke bawah dengan sendirinya."],
+    berhenti: [
+      "Tekan Stop. Motor langsung mati dan pendulum jatuh ke bawah dengan sendirinya.",
+      "Status homing tetap tersimpan. Tekan Homing Ulang kalau kit baru dinyalakan atau kereta sempat digeser dengan tangan.",
+    ],
   },
   {
     family: "ball_beam",
@@ -303,9 +308,9 @@ export const MASALAH: Masalah[] = [
     solusi: "Ganti adaptor yang lebih kuat atau beri catu terpisah untuk kit. Jangan hanya memakai USB laptop.",
   },
   {
-    gejala: "Rotary: Start tidak berjalan",
+    gejala: "Rotary / Linear: Start tidak berjalan",
     penyebab: "Homing belum dilakukan atau homing gagal, sehingga Start Balancing terkunci.",
-    solusi: "Letakkan lengan di tengah, diamkan pendulum, lalu tekan Mulai Homing dan tunggu sampai Sudah homing.",
+    solusi: "Tekan Mulai Homing dan tunggu sampai Sudah homing. Rotary: lengan di tengah dan pendulum diam. Linear: rel kosong dan catu motor 12 V menyala.",
   },
   {
     gejala: "Kit langsung fault setelah Start",

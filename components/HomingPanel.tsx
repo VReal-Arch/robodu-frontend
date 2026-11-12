@@ -12,6 +12,27 @@ const STEPS = ["Homing", "Start", "Stop"];
  * start (the master board reports `homed` only for those kits, so this panel
  * simply does not appear for the others). Sequence: HOMING -> START -> STOP.
  */
+// Cara homing berbeda per kit, jadi petunjuknya juga.
+//   rot_pend : motor diam, lengan & pendulum hanya diamati (tanpa limit switch)
+//   lin_pend : kereta digerakkan motor ke limit kiri, kanan, lalu ke tengah
+function teksHoming(family: string): { awal: string; jalan: string; gagal: string } {
+  if (family === "lin_pend") {
+    return {
+      awal:
+        "Kit ini wajib homing sebelum bisa dijalankan. Kosongkan rel, biarkan pendulum menggantung diam, lalu tekan Mulai Homing. Kereta akan bergerak ke limit kiri, kanan, lalu ke tengah.",
+      jalan: "Kereta sedang homing (limit kiri → kanan → tengah). Jauhkan tangan dari rel.",
+      gagal:
+        "Homing gagal — kereta tidak sampai ke limit switch. Periksa catu motor 12 V dan limit switch, lalu coba lagi.",
+    };
+  }
+  return {
+    awal:
+      "Kit ini wajib homing sebelum bisa dijalankan. Letakkan lengan di tengah, biarkan pendulum menggantung diam, lalu tekan Mulai Homing.",
+    jalan: "Kit sedang mencari posisi nol. Jangan sentuh lengan dan pendulum sampai selesai.",
+    gagal: "Homing gagal — lengan atau pendulum masih bergerak sampai waktu habis. Diamkan lalu coba lagi.",
+  };
+}
+
 export default function HomingPanel() {
   const activeId = useStore((s) => s.activeId);
   const h = useStore((s) => s.homing[s.activeId] ?? NO_HOMING);
@@ -27,13 +48,10 @@ export default function HomingPanel() {
   const current = running ? 2 : h.homed ? 1 : 0;
   const kind = h.failed ? "red" : h.homed && !h.active ? "teal" : "warn";
 
-  const message = h.active
-    ? "Kit sedang mencari posisi nol. Jangan sentuh lengan dan pendulum sampai selesai."
-    : h.failed
-    ? "Homing gagal — lengan atau pendulum masih bergerak sampai waktu habis. Diamkan lalu coba lagi."
-    : h.homed
+  const t = teksHoming(getRobot(activeId).family);
+  const message = h.active ? t.jalan : h.failed ? t.gagal : h.homed
     ? "Posisi nol valid. Start Balancing sudah bisa dipakai."
-    : "Kit ini wajib homing sebelum bisa dijalankan. Letakkan lengan di tengah, biarkan pendulum menggantung diam, lalu tekan Mulai Homing.";
+    : t.awal;
 
   const whyDisabled = !connected
     ? "Sambungkan robot di menu Settings."
